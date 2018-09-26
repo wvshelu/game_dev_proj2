@@ -7,9 +7,12 @@ public class PlayerScript : MonoBehaviour {
 
     public static bool gameOver;
     public GameObject particles;
+    public Sprite up1, up2, down1, down2;
 
 
     Rigidbody2D playerBody;
+    SpriteRenderer spr;
+    Sprite[] up, down;
     int update;
     //static PlayerScript ps;
     //float yDiff;
@@ -19,8 +22,13 @@ public class PlayerScript : MonoBehaviour {
     void Awake () {
         playerBody = GetComponent<Rigidbody2D>();
         update = 0;
-       // ps = this;
-       // yDiff = 0;
+        spr = GetComponent<SpriteRenderer>();
+        up = new Sprite[] { up1, up2 };
+        down = new Sprite[] { down1, down2 };
+
+
+        // ps = this;
+        // yDiff = 0;
         prevY = 0;
         // changed = false;
         // hit = false;
@@ -33,15 +41,26 @@ public class PlayerScript : MonoBehaviour {
             if (Input.GetKey(KeyCode.RightArrow))
             {
                 playerBody.AddForce(new Vector2(50, 0));
+                transform.localScale = new Vector2(0.75f, 0.75f);
             }
 
             if (Input.GetKey(KeyCode.LeftArrow))
             {
                 playerBody.AddForce(new Vector2(-50, 0));
+                transform.localScale = new Vector2(-0.75f, 0.75f);
             }
             update = 0;
         } else {
             update++;
+        }
+
+        if (playerBody.velocity.y < 0) //falling
+        {
+            spr.sprite = down[Random.Range(0, 1)];
+        }
+        else //rising
+        {
+            spr.sprite = up[Random.Range(0, 1)];
         }
 
         if (playerBody.transform.position.y <= -10) {
